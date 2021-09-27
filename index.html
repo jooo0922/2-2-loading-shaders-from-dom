@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listing 2-2, Load Shaders From DOM</title>
+
+    <script id="shader-vs" type="x-shader/x-vertex">
+      attribute vec3 aVertexPosition;
+
+      void main() {
+        gl_Position = vec4(aVertexPosition, 1.0);
+      }
+    </script>
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+      precision mediump float;
+
+      void main() {
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      }
+    </script>
+
+    <script src="./app.js" defer></script>
+    <script src="./webgl-debug.js" defer></script>
+  </head>
+  <body onload="startup();">
+    <canvas id="myGLCanvas" width="500" height="500"></canvas>
+  </body>
+</html>
