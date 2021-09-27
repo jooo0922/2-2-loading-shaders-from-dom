@@ -87,6 +87,25 @@ function setupBuffers() {
   vertexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
   const triangleVertices = [0.0, 0.5, 0.0, -0.5, -0.5, 0.0, 0.5, -0.5, 0.0];
+  // const triangleVertices = [0.0, 0.5, 1.1, -0.5, -0.5, 1.1, 0.5, -0.5, 1.1];
+  /**
+   * 삼각형의 각 버텍스들의 z좌표값에 변화를 줘서 삼각형을 없애는 방법
+   *
+   * 지금 clip space의 z좌표값의 최대값 ~ 최소값은 1 ~ -1 이겠지?
+   * 그렇다면, 그것이 하나의 절두체라고 가정을 하면,
+   * 세 좌표값이 모두 z축을 기준으로 절두체를 벗어나려면 z좌표값의 절댓값을 모두 1이 넘는 값으로 지정해주면 됨.
+   *
+   * 셋 중에 하나라도 1보다 작으면 마치
+   * 그 버텍스는 절두체 내에 들어와있는 상태이기 때문에
+   * 나머지 절두체를 벗어난 버텍스들이 절두체 내부의 버텍스들과 연결되기 때문에
+   * 삼각형이 z축을 따라 기울어진 형태로 일부분만 보이는 것이
+   * 2d 평면 상에서는 왜곡된 삼각형이 보이게 되는 것임.
+   *
+   * 그러나 실제로는 두 버텍스는 절두체를 벗어나서 보이지가 않고,
+   * 절두체를 벗어나지 못한 버텍스에 연결된 일부분만 보이는 것이지!
+   *
+   * 그래서 삼각형이 아예 안보이게 하려면 세 버텍스의 z좌표값의 절대값이 모두 1이 넘기만 하면 됨!
+   */
   gl.bufferData(
     gl.ARRAY_BUFFER,
     new Float32Array(triangleVertices),
@@ -98,7 +117,7 @@ function setupBuffers() {
 }
 
 function draw() {
-  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+  gl.viewport(0, 0, gl.canvas.width / 2, gl.canvas.height / 2);
   gl.clear(gl.COLOR_BUFFER_BIT); // gl.clearColor()로 지정한 색상값으로 색상 버퍼를 채워줌. 즉, 싹 한번 해당 색으로 덮어준다는 것.
 
   gl.vertexAttribPointer(
@@ -120,7 +139,7 @@ function startup() {
   gl = WebGLDebugUtils.makeDebugContext(createGLContext(canvas));
   setupShaders();
   setupBuffers();
-  gl.clearColor(0.0, 0.0, 0.0, 1.0); // draw 함수에서 캔버스 전체를 clear할 때 사용할 색상값을 지정한 것.
+  gl.clearColor(0.0, 1.0, 0.0, 1.0); // draw 함수에서 캔버스 전체를 clear할 때 사용할 색상값을 지정한 것.
   draw();
 }
 
